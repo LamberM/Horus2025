@@ -55,17 +55,27 @@ public class FolderCabinet implements Cabinet {
                 .toList();
     }
 
-    private List<Folder> createOneList(List<Folder> folders) {
+    public List<Folder> createOneList(List<Folder> folders) {
         List<Folder> folderList = filterNullInList(folders);
+        List<MultiFolder> multiFolders = getMultiFoldersFromFolders(folderList);
+        for (MultiFolder multiFolder : multiFolders) {
+            List<Folder> folderResult = filterNullInList(multiFolder.getFolders());
+            List<MultiFolder> multiFolderList = getMultiFoldersFromFolders(folderResult);
+            if (multiFolderList.size() == multiFolders.size()) {
+                return createOneList(folderResult);
+            }
+            folderList = Stream.concat(folderList.stream(), folderResult.stream()).toList();
+        }
+        return folderList;
+    }
+
+    private List<MultiFolder> getMultiFoldersFromFolders(List<Folder> folderList) {
         List<MultiFolder> multiFolders = new ArrayList<>();
         for (Folder folder : folderList) {
             if (folder instanceof MultiFolder multiFolder && multiFolder.getFolders() != null) {
                 multiFolders.add(multiFolder);
             }
         }
-        for (MultiFolder multiFolder : multiFolders) {
-            folderList = Stream.concat(folderList.stream(), filterNullInList(multiFolder.getFolders()).stream()).toList();
-        }
-        return folderList;
+        return multiFolders;
     }
 }
