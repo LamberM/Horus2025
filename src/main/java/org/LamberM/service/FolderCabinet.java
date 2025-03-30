@@ -13,17 +13,17 @@ public class FolderCabinet implements Cabinet {
     }
 
     @Override
-    public Optional<Folder> findFolderByName(String name) {
-        return findFolderFromListByName(folders, name);
-    }
-
-    @Override
     public List<Folder> findFoldersBySize(String size) {
         if (size.equals("SMALL") || size.equals("MEDIUM") || size.equals("LARGE")) {
             return findFolderFromListBySize(folders, size);
         } else {
             throw new IllegalArgumentException("Size does not equals: SMALL,MEDIUM OR RANGE");
         }
+    }
+
+    @Override
+    public Optional<Folder> findFolderByName(String name) {
+        return findFolderFromListByName(folders, name);
     }
 
     @Override
@@ -53,9 +53,10 @@ public class FolderCabinet implements Cabinet {
         List<Folder> folderList = filterNullInList(folders);
         List<MultiFolder> multiFolders = new ArrayList<>();
         for (Folder folder : folderList) {
-            if (folder instanceof MultiFolder multiFolder) {
+            if (folder instanceof MultiFolder multiFolder && multiFolder.getFolders() != null) {
                 multiFolders.add(multiFolder);
             }
+
         }
         if (multiFolders.isEmpty()) {
             return folderList;

@@ -33,6 +33,25 @@ public class MultiFolderCreator {
             }
         };
     }
+    public MultiFolder createSampleWithNullFolders() {
+
+        return new MultiFolder() {
+            @Override
+            public List<Folder> getFolders() {
+                return null;
+            }
+
+            @Override
+            public String getName() {
+                return "";
+            }
+
+            @Override
+            public String getSize() {
+                return "";
+            }
+        };
+    }
 
     public MultiFolder createSampleWithFoldersWithNulls() {
         List<Folder> folders = new ArrayList<>();

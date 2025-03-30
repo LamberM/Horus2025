@@ -72,6 +72,7 @@ class FolderCabinetTest {
             folderList.add(multiFolderCreator.createSampleWithNullSize());
             folderList.add(multiFolderCreator.createSampleWithNullName());
             folderList.add(multiFolderCreator.createSampleWithFoldersWithNulls());
+            folderList.add(multiFolderCreator.createSampleWithNullFolders());
             folderList.add(null);
             folderList.add(folderCreator.createSampleWithNullName());
             folderList.add(folderCreator.createSampleWithNullSize());
@@ -196,6 +197,7 @@ class FolderCabinetTest {
             folderList.add(multiFolderCreator.createSampleWithNullSize());
             folderList.add(multiFolderCreator.createSampleWithNullName());
             folderList.add(multiFolderCreator.createSampleWithFoldersWithNulls());
+            folderList.add(multiFolderCreator.createSampleWithNullFolders());
             folderList.add(null);
             folderList.add(folderCreator.createSampleWithNullName());
             folderList.add(folderCreator.createSampleWithNullSize());
@@ -267,4 +269,43 @@ class FolderCabinetTest {
         }
     }
 
+    @Nested
+    class Count {
+        @Test
+        void givenTwoFoldersMultiFolderNull_whenCount_thenGetResult() {
+            //given
+            List<Folder> folderList = new ArrayList<>();
+            var multiFolder = multiFolderCreator.createSample();
+            folderList.add(multiFolder);
+            folderList.add(folderCreator.createSample());
+            folderList.add(null);
+            //when
+            folderCabinet = new FolderCabinet(folderList);
+            var result = folderCabinet.count();
+            //then
+            //expected value got -1, because folderList will get filter where throw away nulls
+            var expectedValue = multiFolder.getFolders().size() + folderList.size() - 1;
+            Assertions.assertEquals(expectedValue, result);
+        }
+
+        @Test
+        void givenEveryNullPossibilities_whenCount_thenGetResult() {
+            //given
+            List<Folder> folderList = new ArrayList<>();
+            folderList.add(multiFolderCreator.createSampleWithNullFolders());
+            folderList.add(multiFolderCreator.createSampleWithFoldersWithNulls());
+            folderList.add(multiFolderCreator.createSampleWithNullName());
+            folderList.add(multiFolderCreator.createSampleWithNullSize());
+            folderList.add(folderCreator.createSampleWithNullName());
+            folderList.add(folderCreator.createSampleWithNullSize());
+            folderList.add(null);
+            //when
+            folderCabinet = new FolderCabinet(folderList);
+            var result = folderCabinet.count();
+            //then
+            //expected value gave two MultiFolder, because their List<Folders> or list values were null, but MultiFolders get correct value
+            var expectedValue = 2;
+            Assertions.assertEquals(expectedValue, result);
+        }
+    }
 }
